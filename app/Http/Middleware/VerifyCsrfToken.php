@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        "https://aiwriter.so-sighty.fr/*",
+        "http://aiwriter.so-sighty.fr/*",
+        "http://aiwriter.so-sighty.fr/api/*"
     ];
 }
