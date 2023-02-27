@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum'])->get('/users', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->get('/roles', function (Request $request) {
-    return \App\Models\Role::all();
+    return App\Models\Role::all();
 });
 
 Route::middleware(['auth:sanctum'])->get('/roles/{role}', function (Request $request, \App\Models\Role $role) {
