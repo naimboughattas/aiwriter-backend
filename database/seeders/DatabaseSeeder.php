@@ -41,7 +41,6 @@ class DatabaseSeeder extends Seeder
                     'email' => 'boughattas.naim@gmail.com',
                     'email_verified_at' => now(),
                     'password' => Hash::make('123456'), // password
-                    'remember_token' => Str::random(10), 
                 ]
             ]
         );
