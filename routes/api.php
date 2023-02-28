@@ -22,6 +22,18 @@ Route::middleware(['auth:sanctum'])->get('/users', function (Request $request) {
     return \App\Models\User::all()->load('roles');
 });
 
+Route::middleware(['auth:sanctum'])->get('/users/props', function (Request $request) {
+    return \App\Models\User::all()->map(function ($user) {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $user->avatar,
+            'roles' => $user->roles->pluck('id')->toArray(),
+        ];
+    });
+});
+
 Route::middleware(['auth:sanctum'])->get('/roles', function (Request $request) {
     return App\Models\Role::all();
 });
