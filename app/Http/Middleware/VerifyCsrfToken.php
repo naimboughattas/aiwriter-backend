@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         "https://aiwriter.so-sighty.fr/*",
         "http://aiwriter.so-sighty.fr/*",
-        "http://aiwriter.so-sighty.fr/api/*"
+        "http://aiwriter.so-sighty.fr/api/*",
+        "http://localhost:3000/*",
     ];
 }

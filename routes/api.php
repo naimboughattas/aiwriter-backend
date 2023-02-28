@@ -19,17 +19,21 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->get('/users', function (Request $request) {
-    return \App\Models\User::all()->load('roles');
+    return \App\Models\User::with('roles:name')->get()->toArray();
 });
+
+Route::middleware(['auth:sanctum'])->post('/users', [App\Http\Controllers\Auth\RegisteredUserController::class, 'store']);
 
 Route::middleware(['auth:sanctum'])->get('/users/props', function (Request $request) {
     return [
-        'options' => \App\Models\Role::all()->map(function ($role) {
-            return [
-                'id' => $role->id,
-                'name' => $role->name,
-            ];
-        }),
+        'options' => [
+            'roles' => \App\Models\Role::all()->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ];
+            })
+        ],
     ];
 });
 
@@ -57,5 +61,3 @@ Route::middleware(['auth:sanctum'])->post('/users/{user}/roles', function (Reque
     $user->roles()->sync($request->input('roles'));
     return $user->load('roles');
 });
-
-

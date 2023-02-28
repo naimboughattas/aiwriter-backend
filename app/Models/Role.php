@@ -13,6 +13,8 @@ class Role extends Model
         'name',
     ];
 
+    protected $hidden = ['pivot'];
+
     /**
      * Get the user that owns the favorite.
      */
