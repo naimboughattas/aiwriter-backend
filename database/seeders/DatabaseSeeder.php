@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 use DB;
+use Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,6 +33,22 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        DB::table('users')->insert(
+            [
+                [
+                    'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim(fake()->unique()->safeEmail()))) . '?d=identicon',
+                    'name' => 'Naïm Boughattas',
+                    'email' => 'boughattas.naim@gmail.com',
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('123456'), // password
+                    'remember_token' => Str::random(10), 
+                ]
+            ]
+        );
+
+        $admin = \App\Models\User::where('email', 'boughattas.naim@gmail.com')->first();
+        $admin->roles()->sync(['1']);
+
         $roles = \App\Models\Role::all();
 
         $user = \App\Models\User::factory()
@@ -43,5 +60,7 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        
+        
     }
 }
