@@ -29,7 +29,7 @@ Route::middleware(['auth:sanctum'])->get('/users/props', function (Request $requ
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $user->avatar,
-            'roles' => $user->roles->pluck('id')->toArray(),
+            'roles' => $user->roles->toArray(),
         ];
     });
 });
