@@ -46,14 +46,12 @@ class DatabaseSeeder extends Seeder
         );
 
         $admin = \App\Models\User::where('email', 'boughattas.naim@gmail.com')->first();
-        $admin->roles()->sync(['1']);
+        $admin->roles()->sync(\App\Models\Role::all()->pluck('id')->toArray());
 
-        $roles = \App\Models\Role::all();
-
-        $user = \App\Models\User::factory()
-            ->count(3)
-            ->hasAttached($roles)
-            ->create();
+        //$user = \App\Models\User::factory()
+        //    ->count(3)
+        //    ->hasAttached($roles)
+        //    ->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
