@@ -23,15 +23,14 @@ Route::middleware(['auth:sanctum'])->get('/users', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->get('/users/props', function (Request $request) {
-    return \App\Models\User::all()->map(function ($user) {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'avatar' => $user->avatar,
-            'roles' => $user->roles->toArray(),
-        ];
-    });
+    return [
+        'options' => \App\Models\Role::all()->map(function ($role) {
+            return [
+                'id' => $role->id,
+                'name' => $role->name,
+            ];
+        }),
+    ];
 });
 
 Route::middleware(['auth:sanctum'])->get('/roles', function (Request $request) {
