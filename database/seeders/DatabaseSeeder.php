@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert(
             [
                 [
-                    'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim(fake()->unique()->safeEmail()))) . '?d=identicon',
+                    'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim('boughattas.naim@gmail.com'))) . '?d=identicon',
                     'name' => 'Naïm Boughattas',
                     'email' => 'boughattas.naim@gmail.com',
                     'email_verified_at' => now(),
