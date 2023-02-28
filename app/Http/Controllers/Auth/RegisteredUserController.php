@@ -27,7 +27,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($request->email))) . '?d=identicon',
+            'avatar' => 'https://www.gravatar.com/avatar/bf00653a7d2e3d9278c485b76d3e6acb?d=identicon',
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
