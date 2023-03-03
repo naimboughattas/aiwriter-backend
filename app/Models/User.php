@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,5 +53,21 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * The menus that belong to the user.
+     */
+    public function menus(): HasMany
+    {
+        return $this->hasMany(Menu::class);
+    }
+
+    /**
+     * The prompts that belong to the user.
+     */
+    public function prompts(): HasMany
+    {
+        return $this->hasMany(Prompt::class, 'author_id');
     }
 }
