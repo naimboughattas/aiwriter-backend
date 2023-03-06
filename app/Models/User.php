@@ -60,7 +60,7 @@ class User extends Authenticatable
      */
     public function menus(): HasMany
     {
-        return $this->hasMany(Menu::class);
+        return $this->hasMany(Menu::class, 'owner_id');
     }
 
     /**

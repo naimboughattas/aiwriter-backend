@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 | User Routes
 |--------------------------------------------------------------------------
 */
+
+Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user()->load(['roles', 'prompts']);
@@ -82,7 +85,13 @@ Route::middleware(['auth:sanctum'])->post('/users/{user}/roles', function (Reque
 */
 
 Route::middleware(['auth:sanctum'])->get('/menus', function (Request $request) {
-    return \App\Models\Menu::all()->toArray();
+    return \App\Models\Menu::with(['tabs', 'tabs.prompts', 'tabs.children', 'tabs.children.prompts'])->where('owner_id', auth()->user()->id)->get()->map(function ($menu) {
+        return [
+            'id' => $menu->id,
+            'title' => $menu->title,
+            'tabs' => $menu->tabs->where('parent_id', 0)
+        ];
+    });
 });
 
 Route::middleware(['auth:sanctum'])->get('/menus/{menu}', function (Request $request, \App\Models\Menu $menu) {
@@ -94,11 +103,13 @@ Route::middleware(['auth:sanctum'])->get('/menus/{menu}/tabs', function (Request
         return [
             'id' => $tab->id,
             'parent' => $tab->parent_id,
-            'droppable' => ($tab->droppable)? true : false,
+            'droppable' => ($tab->droppable) ? true : false,
             'text' => $tab->title,
             'data' => [
+                'menu_id' => $tab->menu_id,
                 'title' => $tab->title,
                 'prompts_count' => $tab->prompts->count(),
+                'prompts' => $tab->prompts,
                 'created_at' => $tab->created_at,
             ]
         ];
@@ -136,7 +147,7 @@ Route::middleware(['auth:sanctum'])->get('/tabs', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->get('/tabs/{tab}', function (Request $request, \App\Models\Tab $tab) {
-    return $tab;
+    return $tab->load('prompts');
 });
 
 Route::middleware(['auth:sanctum'])->get('/tabs/{tab}/prompts', function (Request $request, \App\Models\Tab $tab) {
@@ -149,13 +160,15 @@ Route::middleware(['auth:sanctum'])->post('/tabs', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->put('/tabs/{tab}', function (Request $request, \App\Models\Tab $tab) {
-    if($request->input('prompts')){
+    if ($request->input('prompts')) {
         $tab->prompts()->sync($request->input('prompts'));
-    }else{
+    } else {
         $tab->update([
+            'menu_id' => $request->input('menu_id'),
             'parent_id' => $request->input('parent_id'),
         ]);
-        \App\Models\Tab::find( $request->input('parent_id'))->prompts()->sync([]);
+        $tab->recChildrenUpdate($request->input('menu_id'));
+        \App\Models\Tab::find($request->input('parent_id'))->prompts()->sync([]);
     }
     return $tab;
 });
@@ -218,5 +231,3 @@ Route::middleware(['auth:sanctum'])->get('/responses', function (Request $reques
 Route::middleware(['auth:sanctum'])->get('/responses/{response}', function (Request $request, \App\Models\Response $response) {
     return $response;
 });
-
-

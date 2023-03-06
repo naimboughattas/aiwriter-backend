@@ -51,4 +51,11 @@ class Tab extends Model
         return $this->belongsToMany(Prompt::class, 'tab_prompt', 'tab_id', 'prompt_id');
     }
 
+    public function recChildrenUpdate($props){
+        if($this->children()->exists()){
+            foreach($this->children()->get() as $child){
+                $child->recChildrenUpdate($props);
+            }
+        }
+    }
 }
