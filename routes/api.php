@@ -163,12 +163,9 @@ Route::middleware(['auth:sanctum'])->put('/tabs/{tab}', function (Request $reque
     if ($request->input('prompts')) {
         $tab->prompts()->sync($request->input('prompts'));
     } else {
-        $tab->update([
-            'menu_id' => $request->input('menu_id'),
-            'parent_id' => $request->input('parent_id'),
-        ]);
-        $tab->recChildrenUpdate($request->input('menu_id'));
-        \App\Models\Tab::find($request->input('parent_id'))->prompts()->sync([]);
+        $tab->update($request->all());
+        ($request->input('menu_id')) && $tab->recChildrenUpdate($request->input('menu_id'));
+        ($request->input('menu_id')) && \App\Models\Tab::find($request->input('parent_id'))->prompts()->sync([]);
     }
     return $tab;
 });
@@ -185,7 +182,7 @@ Route::middleware(['auth:sanctum'])->delete('/tabs/{tab}', function (Request $re
 */
 
 Route::middleware(['auth:sanctum'])->get('/prompts', function (Request $request) {
-    return \App\Models\Prompt::all();
+    return \App\Models\Prompt::where('author_id', auth()->user()->id)->get();
 });
 
 Route::middleware(['auth:sanctum'])->get('/prompts/{prompt}', function (Request $request, \App\Models\Prompt $prompt) {
